@@ -27,7 +27,7 @@
     <div class="col-md-3 register-left">
       <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/Cartoon_space_rocket.png" alt="" />
       <h3 data-localize="Submission Portal">Submission Portal</h3>
-      <p data-localize="Dummy" class="desc"> Submit questions through text, voice, or image input. Also, add images or mathematical equations to your question.</p>
+      <p data-localize="Dummy" class="desc"> Submit your Questions. Also, add images or mathematical equations to your question.</p>
         <!-- <button class="btn btn-outline-light">Back to Dashboard</button> -->
       </div>
     <div class="col-md-9 register-right" style="border-radius:25px ;"> 
@@ -66,7 +66,7 @@
 
               <!-- Question -->
               <input type="file" accept="image/*" id="myFile" style="display:none";visibility:none;">
-              <label data-localize="typequestion" for="exampleFormControlTextarea4" class="text1 font-weight-light">Please type/speak the question: </label>&nbsp&nbsp<i id="click_to_convert" class="fa fa-1x fa-microphone addIcon" aria-hidden="true"></i>&nbsp&nbsp<label for="myFile"><i class="fa fa-1x fa-camera addIcon" aria-hidden="true"></i></label>
+              <label data-localize="typequestion" for="exampleFormControlTextarea4" class="text1 font-weight-light">Please type the question: </label>&nbsp&nbsp<i id="click_to_convert" class="fa fa-1x fa-microphone addIcon" aria-hidden="true" style="display: none;"></i>&nbsp&nbsp<label for="myFile"><i class="fa fa-1x fa-camera addIcon" aria-hidden="true" style="display: none;"></i></label>
                 <!-- <input type="file" id="myFile" style="display:none";visibility:none;"> -->
               <textarea id="convert_text" onchange="App.validateQuestion(); return false;" name="questions" class="form-control addQuestionText" id="exampleFormControlTextarea4" rows="3" cols="50" minlength="5" maxlength="1000" required></textarea>
 
@@ -89,11 +89,11 @@
 
             <!-- upload section -->         
 
-                  <div class="row" style="margin-left:0.50em ;">
+                  <div class="row" style="margin-left:0.50em ; display: none;">
 
                     <div class="col-md-3 left">     
                       <input style="margin-top:0.7em ;" type="file" accept="image/jpeg, image/jpg, image/png" id="inputImagefile" class="fileInput" name="filename">
-                      <p id="imageUrlText" style="display: none;">IPFS url</p>             
+                      <p id="imageUrlText" ">IPFS url</p>             
                     </div>
 
                     <div class="col-md-2 right">		

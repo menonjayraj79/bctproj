@@ -1,7 +1,6 @@
 // import {AuthValidation} from '../../src/login-signup-web3/utils/AuthValidation';
 // const Moralis = require("moralis/node");
 
-
 App = {
   web3Provider: null,
   contracts: {},
@@ -85,7 +84,7 @@ App = {
       ans: 0,
       approve: false,
       isApproved: false,
-      d:null
+      d: null,
     };
 
     // console.log(Problem);
@@ -93,19 +92,17 @@ App = {
     const difficulty = () => {
       let difficultyDOM = document.querySelector("#d");
       let selectedD = difficultyDOM.options[difficultyDOM.selectedIndex].text;
-      if(selectedD=="Easy"){
+      if (selectedD == "Easy") {
         Problem.d = 0;
       }
-      if(selectedD=="Medium"){
+      if (selectedD == "Medium") {
         Problem.d = 1;
       }
-      if(selectedD=="Hard"){
+      if (selectedD == "Hard") {
         Problem.d = 2;
       }
       console.log(Problem.d);
     };
-
-
 
     const subject = () => {
       Problem.imgUrl = document
@@ -217,8 +214,8 @@ App = {
         //   animationDuration: 300,
         //   dismissible: true,
         // });
-        // window.alert("Question added successfully");
-        alert("", "Question added successfully", "success");
+        alert("Question added successfully");
+        // alert("", "Question added successfully", "success");
         window.location = "http://localhost:3000/addQuestion.html";
         // if (
         //   window.history.state.prevUrl ==
@@ -299,7 +296,6 @@ App = {
   },
 
   downloadQuestions: function () {
-
     let problemCard = document.querySelector(".question-area");
     //Get checkbox inputs
     var excludedTopics = [];
@@ -313,9 +309,9 @@ App = {
     }
 
     // DIFFICULTY COUNT
-    // alert(easyQuestions); 
-    // alert(mediumQuestions); 
-    // alert(hardQuestions); 
+    // alert(easyQuestions);
+    // alert(mediumQuestions);
+    // alert(hardQuestions);
 
     var date = document.querySelector(".date").value;
     var subject = document.querySelector(".subject").value;
@@ -350,13 +346,12 @@ App = {
         "Nuclei",
         "Semiconductor Electronics",
       ];
-      
+
       var map = new Map();
-      for(var i in chapterArray){
+      for (var i in chapterArray) {
         map.set(chapterArray[i], 0);
       }
       console.log(map);
-
     } else if (subject == "Biology") {
       var chapterArray = [
         "Reproduction in Organisms",
@@ -378,11 +373,10 @@ App = {
       ];
 
       var map = new Map();
-      for(var i in chapterArray){
+      for (var i in chapterArray) {
         map.set(chapterArray[i], 0);
       }
       console.log(map);
-
     } else if (subject == "Mathematics") {
       var chapterArray = [
         "Relations and Functions",
@@ -399,13 +393,12 @@ App = {
         "Linear Programming",
         "Probability",
       ];
-      
+
       var map = new Map();
-      for(var i in chapterArray){
+      for (var i in chapterArray) {
         map.set(chapterArray[i], 0);
       }
       console.log(map);
-
     } else {
       var chapterArray = [
         "The Solid State",
@@ -427,12 +420,11 @@ App = {
       ];
 
       var map = new Map();
-      for(var i in chapterArray){
+      for (var i in chapterArray) {
         map.set(chapterArray[i], 0);
       }
       console.log(map);
     }
-
 
     // Build question paper using inputs
     App.contracts.CrowdSource.deployed()
@@ -446,87 +438,85 @@ App = {
         for (var k = 0; k <= problemCount; k++) {
           visitedArr[k] = 0;
         }
-        
+
         //  console.log(visitedArr);
         let quesData = "";
 
         var index = 1;
         let questionCount = 0;
 
-        console.log("bye",count1);
+        console.log("bye", count1);
         // once easy, medium, difficult is added: for remaining questions
-        let reqCount=(count1/totalQues)*100;
-        let rest=totalQues-reqCount;
+        let reqCount = (count1 / totalQues) * 100;
+        let rest = totalQues - reqCount;
         var flag = 0;
         let count = 0;
-        console.log("saad",crowdsourceInstance.problems)
+        console.log("saad", crowdsourceInstance.problems);
         for (var i = 1; i <= problemCount; i++) {
           crowdsourceInstance.problems(i).then(function (p) {
             let address = p[9].toString();
-            console.log(address.toLowerCase()==App.account.toLowerCase());
-            console.log("saad clg",address)
-          count++;
+            console.log(address.toLowerCase() == App.account.toLowerCase());
+            console.log("saad clg", address);
+            count++;
             if (
               p[6] == true &&
               p[7] == true &&
               p[0] == subject &&
-              p[9].toLowerCase()==App.account.toLowerCase() &&
+              p[9].toLowerCase() == App.account.toLowerCase() &&
               visitedArr[index] == 0
             ) {
               console.log("byeee111");
               for (var j = 0; j < chapterArray.length; j++) {
-                  console.log("fffff")
-                  //Here we have the information of chapter and subject
-                  if (p[1] == chapterArray[j]) {
+                console.log("fffff");
+                //Here we have the information of chapter and subject
+                if (p[1] == chapterArray[j]) {
+                  // check weightage
+                  if (map.get(chapterArray[j]) >= weightage) {
+                    console.log("loop breaked");
+                    break;
+                  }
 
-                    // check weightage
-                    if(map.get(chapterArray[j]) >= weightage){
-                      console.log("loop breaked");
-                      break;
-                    }
+                  //increase weightage count
+                  map.set(chapterArray[j], map.get(chapterArray[j]) + 1);
+                  console.log(map);
 
-                    //increase weightage count
-                    map.set(chapterArray[j], (map.get(chapterArray[j]) + 1));
-                    console.log(map);
+                  questionCount++;
+                  let subject = p[0];
+                  let topic = p[1];
+                  let question = p[2];
+                  let options = App.getOptions(p[3]);
+                  let imgHash = p[4];
+                  let ans = p[5].toNumber();
+                  let approve = p[6];
+                  let isApprove = p[7];
+                  let correctAnswer = p[ans + 1];
+                  let anotherOption = options;
+                  const Problem = {
+                    subject: p[0],
+                    topic: p[1],
+                    question: p[2],
+                    options: anotherOption,
+                    imgUrl: p[4],
+                    ans: p[5].toNumber(),
+                    approve: p[6],
+                    isApproved: p[7],
+                    d: null,
+                  };
 
+                  // check total question
 
-                    questionCount++;
-                    let subject = p[0];
-                    let topic = p[1];
-                    let question = p[2];
-                    let options = App.getOptions(p[3]);
-                    let imgHash = p[4];
-                    let ans = p[5].toNumber();
-                    let approve = p[6];
-                    let isApprove = p[7];
-                    let correctAnswer = p[ans + 1];
-                    let anotherOption =  options;              
-                    const Problem = {
-                      subject: p[0],
-                      topic: p[1],
-                      question: p[2],
-                      options:anotherOption ,
-                      imgUrl: p[4],
-                      ans: p[5].toNumber(),
-                      approve: p[6],
-                      isApproved: p[7],
-                      d:null
-                    };
+                  if (reqCount <= 0) {
+                    flag = 1;
+                    break;
+                  }
 
-                    // check total question
+                  //reduce total question
+                  reqCount -= 1;
 
-                    if(reqCount <= 0){
-                      flag = 1;
-                      break;
-                    }
+                  // store question in array
+                  questionStored.push(Problem);
 
-                    //reduce total question
-                    reqCount -= 1;
-
-                    // store question in array
-                    questionStored.push(Problem);
-                  
-                    let ques = `<br />
+                  let ques = `<br />
                     <div class="card fullCardQP${count}">
                       <div style="background-color: rgb(221, 221, 221)" class="card-header">
                         <p class="ques" contenteditable="true">
@@ -546,90 +536,86 @@ App = {
                             <td class="right-opt">D.<span contenteditable="true"> ${options[3]}</span></td>
                           </tr>
                         </table>
-                        <i class="fa fa-plus" id="addBlock${count}" onclick="addRemove(${count},${questionCount})" aria-hidden="true"></i>
-                        <i class="fa fa-minus" id="removeBlock${count}" onclick="addRemove(${count},${questionCount})" aria-hidden="true"></i>
+                        <i style="display: none;" class="fa fa-plus" id="addBlock${count}" onclick="addRemove(${count},${questionCount})" aria-hidden="true"></i>
+                        <i style="display: none;" class="fa fa-minus" id="removeBlock${count}" onclick="addRemove(${count},${questionCount})" aria-hidden="true"></i>
                       </div>
                     </div>`;
-                    quesData += ques;
-                    problemCard.innerHTML = quesData;
-                  }
+                  quesData += ques;
+                  problemCard.innerHTML = quesData;
                 }
-                document.querySelector("#download").style.visibility =
-                  "visible";
               }
+              document.querySelector("#download").style.visibility = "visible";
+            }
             index++;
             console.log("questionStored", questionStored[0]);
           });
-          // check total question 
-          if(flag == 1){
+          // check total question
+          if (flag == 1) {
             break;
           }
         }
 
-        flag=0;
+        flag = 0;
         for (var i = 1; i <= problemCount; i++) {
           crowdsourceInstance.problems(i).then(function (p) {
-          count++;
+            count++;
             if (
               p[6] == true &&
               p[7] == true &&
               p[0] == subject &&
               visitedArr[index] == 0
             ) {
-
               for (var j = 0; j < chapterArray.length; j++) {
                 // if (excludedTopics[j] == -1) {
-                  //Here we have the information of chapter and subject
-                  if (p[1] == chapterArray[j]) {
+                //Here we have the information of chapter and subject
+                if (p[1] == chapterArray[j]) {
+                  // check weightage
+                  if (map.get(chapterArray[j]) >= weightage) {
+                    console.log("loop breaked");
+                    break;
+                  }
 
-                    // check weightage
-                    if(map.get(chapterArray[j]) >= weightage){
-                      console.log("loop breaked");
-                      break;
-                    }
+                  //increase weightage count
+                  map.set(chapterArray[j], map.get(chapterArray[j]) + 1);
+                  console.log(map);
 
-                    //increase weightage count
-                    map.set(chapterArray[j], (map.get(chapterArray[j]) + 1));
-                    console.log(map);
+                  questionCount++;
+                  let subject = p[0];
+                  let topic = p[1];
+                  let question = p[2];
+                  let options = App.getOptions(p[3]);
+                  let imgHash = p[4];
+                  let ans = p[5].toNumber();
+                  let approve = p[6];
+                  let isApprove = p[7];
+                  let correctAnswer = p[ans + 1];
+                  let anotherOption = options;
+                  const Problem = {
+                    subject: p[0],
+                    topic: p[1],
+                    question: p[2],
+                    options: anotherOption,
+                    imgUrl: p[4],
+                    ans: p[5].toNumber(),
+                    approve: p[6],
+                    isApproved: p[7],
+                    d: null,
+                  };
 
+                  // check total question
 
-                    questionCount++;
-                    let subject = p[0];
-                    let topic = p[1];
-                    let question = p[2];
-                    let options = App.getOptions(p[3]);
-                    let imgHash = p[4];
-                    let ans = p[5].toNumber();
-                    let approve = p[6];
-                    let isApprove = p[7];
-                    let correctAnswer = p[ans + 1];
-                    let anotherOption =  options;              
-                    const Problem = {
-                      subject: p[0],
-                      topic: p[1],
-                      question: p[2],
-                      options:anotherOption ,
-                      imgUrl: p[4],
-                      ans: p[5].toNumber(),
-                      approve: p[6],
-                      isApproved: p[7],
-                      d:null
-                    };
+                  if (rest <= 0) {
+                    flag = 1;
+                    break;
+                  }
 
-                    // check total question
+                  //reduce total question
+                  rest -= 1;
 
-                    if(rest <= 0){
-                      flag = 1;
-                      break;
-                    }
+                  // store question in array
+                  questionStored.push(Problem);
 
-                    //reduce total question
-                    rest -= 1;
-
-                    // store question in array
-                    questionStored.push(Problem);
-                  
-                    let ques = `<br />
+                  let ques = `<br />
                     <div class="card fullCardQP${count}">
                       <div style="background-color: rgb(221, 221, 221)" class="card-header">
                         <p class="ques" contenteditable="true">
@@ -649,35 +635,31 @@ App = {
                             <td class="right-opt">D.<span contenteditable="true"> ${options[3]}</span></td>
                           </tr>
                         </table>
-                        <i class="fa fa-plus" id="addBlock${count}" onclick="addRemove(${count},${questionCount})" aria-hidden="true"></i>
-                        <i class="fa fa-minus" id="removeBlock${count}" onclick="addRemove(${count},${questionCount})" aria-hidden="true"></i>
+                        <i style="display: none;" class="fa fa-plus" id="addBlock${count}" onclick="addRemove(${count},${questionCount})" aria-hidden="true"></i>
+                        <i style="display: none;" class="fa fa-minus" id="removeBlock${count}" onclick="addRemove(${count},${questionCount})" aria-hidden="true"></i>
                       </div>
                     </div>`;
-                    quesData += ques;
-                    problemCard.innerHTML = quesData;
-                  }
+                  quesData += ques;
+                  problemCard.innerHTML = quesData;
                 }
-                document.querySelector("#download").style.visibility =
-                  "visible";
               }
+              document.querySelector("#download").style.visibility = "visible";
+            }
             // }
             index++;
             console.log("questionStored", questionStored[0]);
           });
-          // check total question 
-          if(flag == 1){
+          // check total question
+          if (flag == 1) {
             break;
           }
         }
-
-
 
         // console.log("questionStored",questionStored[0]);
       })
       .catch((e) => {
         console.log(e);
       });
-
   },
 
   getAllQuestionsFromChain: function () {
@@ -720,15 +702,15 @@ App = {
             let correctAnswer = p[ans + 1];
             let currentProblemID = i;
 
-            let difficulty2=null;
-            if(p[8]==0){
-              difficulty2="Easy";
+            let difficulty2 = null;
+            if (p[8] == 0) {
+              difficulty2 = "Easy";
             }
-            if(p[8]==1){
-              difficulty2="Medium";
+            if (p[8] == 1) {
+              difficulty2 = "Medium";
             }
-            if(p[8]==2){
-              difficulty2="Hard";
+            if (p[8] == 2) {
+              difficulty2 = "Hard";
             }
 
             count++;
@@ -892,7 +874,7 @@ App = {
               </div>
           </div>`;
               quesData2 += ques;
-              if(problemCard2!=null){
+              if (problemCard2 != null) {
                 problemCard2.innerHTML = quesData2;
               }
               // problemCard2.innerHTML = quesData2;
@@ -914,22 +896,22 @@ App = {
       ans: 0,
       approve: false,
       isApproved: false,
-      d:null
+      d: null,
     };
 
     function getNewDifficulty() {
-      var d=document
+      var d = document
         .querySelector(`.editDifficulty${count}`)
         .innerHTML.toString();
-        if(d=="Medium"){
-          Problem.d=1;
-        }
-        if(d=="Hard"){
-          Problem.d=2;
-        }
-        if(d=="Easy"){
-          Problem.d=0;
-        }
+      if (d == "Medium") {
+        Problem.d = 1;
+      }
+      if (d == "Hard") {
+        Problem.d = 2;
+      }
+      if (d == "Easy") {
+        Problem.d = 0;
+      }
     }
     function getNewSubject() {
       Problem.subject = document
@@ -1178,12 +1160,12 @@ App = {
             let approve = p[6];
             let isApprove = p[7];
             let difficulty;
-            if(p[8] == 0){
-              difficulty = "Easy"
-            }else if(p[8] == 0){
-              difficulty = "Medium"
-            }else{
-              difficulty = "Hard"
+            if (p[8] == 0) {
+              difficulty = "Easy";
+            } else if (p[8] == 0) {
+              difficulty = "Medium";
+            } else {
+              difficulty = "Hard";
             }
             count++;
             if (
@@ -1250,7 +1232,7 @@ App = {
                         <div class="upperReward">
                           <img style="height: 1.9em;" src="assets/ethereum.svg" alt="ETH">
                           <button class="SendMatic-btn" onClick="App.sendReward(${count})">
-                          Send 1 Matic
+                          Send 1 Eth
                           </button>
                           <button class="report-btn" onClick="App.reportQuestion(${count})">report</button>
                         </div>
@@ -1384,7 +1366,7 @@ App = {
                 `🎉 ${p.substring(0, 6)}....${p.substring(
                   38,
                   42
-                )} Got rewarded with 1 Matic`
+                )} Got rewarded with 1 Eth`
               )
             );
             ul.appendChild(li);
@@ -1401,16 +1383,16 @@ App = {
 
   reportQuestion: function (_id) {
     App.contracts.CrowdSource.deployed()
-    .then(function (instance) {
-      crowdSourceInstance2 = instance;
-      // console.log("Report id",_id);
+      .then(function (instance) {
+        crowdSourceInstance2 = instance;
+        // console.log("Report id",_id);
         const result = crowdSourceInstance2.report(_id, { from: App.account });
         return result;
         // x.push(5);
       })
       .then(function (result) {
         // window.location = "http://localhost:3000/studentDashboard.html";
-        console.log("Report result",result);
+        console.log("Report result", result);
       });
   },
 };

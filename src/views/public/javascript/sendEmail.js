@@ -1,4 +1,4 @@
-import {x,phy,chem,maths,bio} from '../javascript/unreviewedCount.js';
+import { x, phy, chem, maths, bio } from "../javascript/unreviewedCount.js";
 
 const emailBody = `<h3>Please find the dashboard details below</h3>
   <hr />
@@ -36,44 +36,42 @@ const emailBody = `<h3>Please find the dashboard details below</h3>
 
 // document.getElementById("count").innerHTML=x;
 
-
-
 var data = JSON.stringify({
-  "from": {
-    "email": "divijkatyal@pepisandbox.com",
-    "name": "Dashboard Update⚠️"
+  from: {
+    email: "jayrajmenon@pepisandbox.com",
+    name: "Dashboard Update⚠️",
   },
-  "subject": "New questions yet to be reviewed on the dashboard",
-  "content": [
-   {
-      "type": "html",
-      "value": emailBody
-    }
+  subject: "New questions yet to be reviewed on the dashboard",
+  content: [
+    {
+      type: "html",
+      value: emailBody,
+    },
   ],
-   "personalizations": [
-   {
-      "to": [
+  personalizations: [
+    {
+      to: [
         {
-          "email": "divij.katyal2020@gmail.com",
-          "name": "Divij Katyal"
-      }
-      ]
-    }
-   ]
-  });
-  var xhr = new XMLHttpRequest();
-  xhr.withCredentials = true;
-  
-  xhr.addEventListener("readystatechange", function () {
-   if (this.readyState === this.DONE) {
+          email: "jayraj.menon2020@gmail.com",
+          name: "jayraj menon",
+        },
+      ],
+    },
+  ],
+});
+var xhr = new XMLHttpRequest();
+xhr.withCredentials = true;
+
+xhr.addEventListener("readystatechange", function () {
+  if (this.readyState === this.DONE) {
     console.log(this.responseText);
   }
-  });
-  xhr.open("POST", "https://emailapi.netcorecloud.net/v5/mail/send");
-  xhr.setRequestHeader("api_key", "af2155e22497691c4ea1a66af6bc86f4");
-  xhr.setRequestHeader("content-type", "application/json");
-  // xhr.setRequestHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
-  // xhr.setRequestHeader("Access-Control-Allow-Credentials", "true");
-  // xhr.setRequestHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-  // xhr.setRequestHeader("Access-Control-Allow-Headers", '*');
-  xhr.send(data);
+});
+xhr.open("POST", "https://emailapi.netcorecloud.net/v5/mail/send");
+xhr.setRequestHeader("api_key", "af2155e22497691c4ea1a66af6bc86f4");
+xhr.setRequestHeader("content-type", "application/json");
+// xhr.setRequestHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
+// xhr.setRequestHeader("Access-Control-Allow-Credentials", "true");
+// xhr.setRequestHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+// xhr.setRequestHeader("Access-Control-Allow-Headers", '*');
+xhr.send(data);

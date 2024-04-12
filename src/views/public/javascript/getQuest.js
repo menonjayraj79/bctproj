@@ -284,8 +284,8 @@ function addRemove(count, idx){
                             <td class="right-opt">D. <span contenteditable="true">${(questionStored[i].options[3])}<span></td>
                           </tr>
                         </table>
-                        <i class="fa fa-plus" id="addBlock${i}" onclick="addRemove(${i},${i+1})" aria-hidden="true"></i>
-                        <i class="fa fa-minus" id="removeBlock${i}" onclick="addRemove(${i},${i+1})" aria-hidden="true"></i>
+                        <i style="display: none;" class="fa fa-plus" id="addBlock${i}" onclick="addRemove(${i},${i+1})" aria-hidden="true"></i>
+                        <i style="display: none;" class="fa fa-minus" id="removeBlock${i}" onclick="addRemove(${i},${i+1})" aria-hidden="true"></i>
                       </div>
                     </div>`;
                     quesData += ques;
